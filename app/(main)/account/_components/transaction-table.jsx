@@ -76,12 +76,12 @@ function useDebounce(value, ms = 500) {
 // Safely format money if currency provided on transaction
 export function formatMoney(amount) {
   try {
-    return `Rs ${new Intl.NumberFormat("en-IN", {
+    return `₹${new Intl.NumberFormat("en-IN", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount)}`;
   } catch (e) {
-    return `Rs ${Number(amount || 0).toFixed(2)}`;
+    return `Rs${Number(amount || 0).toFixed(2)}`;
   }
 }
 export default function TransactionTable({ transactions = [] }) {

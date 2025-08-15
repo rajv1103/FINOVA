@@ -6,9 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Calendar as CalendarIcon,
   Loader2,
-  DollarSign,
+  BadgeIndianRupee ,
   Tag,
   CreditCard,
+  BadgeIndianRupeeIcon,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -156,8 +157,6 @@ export default function AddTransactionForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="rounded-2xl  bg-card p-6 shadow-sm">
         <div className="flex items-center gap-4">
-         
-
           <div>
             <h3 className="text-lg font-semibold">
               {editMode ? "Edit Transaction" : "Add Transaction"}
@@ -199,12 +198,12 @@ export default function AddTransactionForm({
           <div className="relative flex flex-col">
             <label className="mb-2 text-sm font-medium">Amount</label>
             <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-2 flex h-8 items-center">
-                <DollarSign className="h-4 w-4 opacity-60" />
+              <span className="p-auto pointer-events-none absolute left-3 top-2 flex h-5 items-center">
+              <BadgeIndianRupeeIcon/>
               </span>
               <Input
                 type="number"
-                step="0.01"
+                step="1"
                 placeholder="0.00"
                 className="pl-10"
                 {...register("amount")}
@@ -218,7 +217,6 @@ export default function AddTransactionForm({
               </p>
             )}
           </div>
-
           {/* Account */}
           <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium">Account</label>
@@ -226,18 +224,26 @@ export default function AddTransactionForm({
               onValueChange={(value) => setValue("accountId", value)}
               defaultValue={getValues("accountId")}
             >
-              <SelectTrigger className="w-full pl-3">
+              <SelectTrigger className="w-full pl-3 py-2">
+                {" "}
+                {/* Added vertical padding */}
                 <SelectValue placeholder="Select account" />
               </SelectTrigger>
               <SelectContent>
                 {accounts.map((account) => (
                   <SelectItem key={account.id} value={account.id}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="rounded-sm border p-1">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-4">
+                        {" "}
+                        {/* Slightly increased gap */}
+                        <div className="flex items-center justify-center rounded-sm border p-1.5">
+                          {" "}
+                          {/* Centered icon */}
                           <CreditCard className="h-4 w-4" />
                         </div>
-                        <div>
+                        <div className="leading-tight">
+                          {" "}
+                          {/* Reduce vertical text spacing */}
                           <div className="text-sm font-medium">
                             {account.name}
                           </div>
@@ -246,8 +252,8 @@ export default function AddTransactionForm({
                           </div>
                         </div>
                       </div>
-                      <div className="text-sm">
-                        ${parseFloat(account.balance).toFixed(2)}
+                      <div className="text-right text-sm font-medium min-w-[80px]">
+                        ₹{parseFloat(account.balance).toFixed(2)}
                       </div>
                     </div>
                   </SelectItem>
@@ -270,6 +276,7 @@ export default function AddTransactionForm({
               </p>
             )}
           </div>
+
 
           {/* Category */}
           <div className="flex flex-col">

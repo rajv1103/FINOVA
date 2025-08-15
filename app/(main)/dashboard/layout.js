@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className=" flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Sticky Header */}
       <header className="sticky top-0 z-20 bg-white dark:bg-gray-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }) {
       </header>
 
       {/* Main */}
-      <main className="flex-grow max-w-7xl mx-auto px-5 py-8">
+      <main className="flex-grow   px-5 py-8">
         {/* If any child is async client, you can still wrap in Suspense */}
         <Suspense
           fallback={

@@ -96,7 +96,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
         border-b border-gray-200 dark:border-gray-700
       ">
         <div className="flex-1">
-          <CardTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+          <CardTitle className=" gradient-title text-xl font-semibold text-gray-800 dark:text-gray-100">
             Monthly Budget
           </CardTitle>
           <CardDescription className="mt-1 text-sm text-gray-600 dark:text-gray-400">

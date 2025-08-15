@@ -29,7 +29,7 @@ export default function DashboardContent({
       {/* Transactions Overview */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+          <h2 className="gradient-title text-2xl font-semibold text-gray-800 dark:text-gray-100">
             Overview
           </h2>
         </div>
@@ -39,7 +39,7 @@ export default function DashboardContent({
       {/* Your Accounts */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+          <h2 className=" gradient-title text-2xl font-semibold text-gray-800 dark:text-gray-100">
             Your Accounts
           </h2>
         </div>
@@ -49,7 +49,7 @@ export default function DashboardContent({
             <Card className="flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer transition-all duration-300 hover:border-indigo-500 hover:shadow-lg">
               <CardContent className="flex flex-col items-center justify-center py-12 px-6 text-muted-foreground">
                 <Plus className="h-10 w-10 mb-2 text-indigo-500 animate-bounce" />
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <p className="gradient-title text-sm font-medium text-gray-700 dark:text-gray-300">
                   Add New Account
                 </p>
               </CardContent>

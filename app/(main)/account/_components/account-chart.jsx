@@ -8,9 +8,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
-  Cell,
 } from "recharts";
 import {
   format,
@@ -29,11 +27,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { IconStack, IconGrouped, IconCalendar } from "lucide-react"; // optional icons; replace if not available
 
-// Date range presets (keeps your prior choices)
+// Presets
 const DATE_RANGES = {
   "7D": { label: "Last 7 Days", days: 7 },
   "1M": { label: "Last Month", days: 30 },
@@ -42,7 +38,6 @@ const DATE_RANGES = {
   ALL: { label: "All Time", days: null },
 };
 
-// Granularity options
 const GRANULARITY = {
   DAILY: { label: "Daily" },
   WEEKLY: { label: "Weekly" },
@@ -54,11 +49,6 @@ const currencyFormatter = (v) =>
     ? `₹ ${new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2 }).format(v)}`
     : String(v);
 
-
-/**
- * AccountChart
- * Named export to match your existing imports.
- */
 export function AccountChart({ transactions = [] }) {
   const [dateRangeKey, setDateRangeKey] = useState("1M");
   const [granularity, setGranularity] = useState("DAILY");
@@ -66,41 +56,34 @@ export function AccountChart({ transactions = [] }) {
   const [showIncome, setShowIncome] = useState(true);
   const [showExpense, setShowExpense] = useState(true);
 
-  // Prepare start date for filter
   const range = DATE_RANGES[dateRangeKey];
   const now = new Date();
   const startDate = range.days ? startOfDay(subDays(now, range.days - 1)) : startOfDay(new Date(0));
   const endDate = endOfDay(now);
 
-  // Group transactions by date bucket (based on granularity)
   const processed = useMemo(() => {
-    if (!transactions || transactions.length === 0) return { data: [], totals: { income: 0, expense: 0 }, avg: { income: 0, expense: 0 } };
+    if (!transactions.length)
+      return { data: [], totals: { income: 0, expense: 0 }, avg: { income: 0, expense: 0 } };
 
     const buckets = new Map();
-
     const getBucketKey = (date) => {
       if (granularity === "MONTHLY") return format(startOfMonth(date), "yyyy-MM");
-      if (granularity === "WEEKLY") return format(startOfWeek(date, { weekStartsOn: 1 }), "yyyy-'W'II"); // using ISO-ish week label
+      if (granularity === "WEEKLY") return format(startOfWeek(date, { weekStartsOn: 1 }), "yyyy-'W'II");
       return format(startOfDay(date), "yyyy-MM-dd");
     };
 
-    // Filter and bucket
     transactions.forEach((t) => {
-      // t.date might be ISO string or Date object
       const rawDate = typeof t.date === "string" ? parseISO(t.date) : new Date(t.date);
       if (rawDate < startDate || rawDate > endDate) return;
-
       const key = getBucketKey(rawDate);
-      if (!buckets.has(key)) buckets.set(key, { ts: rawDate.getTime(), income: 0, expense: 0, labelTs: rawDate.getTime() });
+      if (!buckets.has(key))
+        buckets.set(key, { ts: rawDate.getTime(), income: 0, expense: 0, labelTs: rawDate.getTime() });
       const bucket = buckets.get(key);
-
       if (t.type === "INCOME") bucket.income += Number(t.amount || 0);
       else bucket.expense += Number(t.amount || 0);
     });
 
-    // Convert map -> sorted array
     const arr = Array.from(buckets.entries()).map(([key, val]) => {
-      // choose readable label per granularity
       let label;
       if (granularity === "MONTHLY") label = format(new Date(val.labelTs), "MMM yyyy");
       else if (granularity === "WEEKLY") {
@@ -109,17 +92,13 @@ export function AccountChart({ transactions = [] }) {
         const endWeek = format(new Date(startOfWeek(d, { weekStartsOn: 1 }).getTime() + 6 * 24 * 3600 * 1000), "MMM dd");
         label = `${startWeek} — ${endWeek}`;
       } else label = format(new Date(val.labelTs), "MMM dd");
-
       return { key, label, ts: val.ts, income: Number(val.income), expense: Number(val.expense) };
     });
 
     arr.sort((a, b) => a.ts - b.ts);
-
-    // Totals & averages
     const totals = arr.reduce((acc, cur) => ({ income: acc.income + cur.income, expense: acc.expense + cur.expense }), { income: 0, expense: 0 });
     const days = Math.max(1, arr.length);
     const avg = { income: totals.income / days, expense: totals.expense / days };
-
     return { data: arr, totals, avg };
   }, [transactions, dateRangeKey, granularity, startDate, endDate]);
 
@@ -129,26 +108,23 @@ export function AccountChart({ transactions = [] }) {
     expense: d.expense,
   }));
 
-  // Totals for header
   const totals = processed.totals;
   const net = totals.income - totals.expense;
-
-  // If empty: show subtle empty state
   const isEmpty = chartData.length === 0;
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4">
         <div>
           <CardTitle className="text-base font-medium">Transaction Overview</CardTitle>
           <p className="text-sm text-muted-foreground">A quick look at income vs expenses</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 text-sm">
             <div className="text-muted-foreground text-xs">Range</div>
-            <Select value={dateRangeKey} onValueChange={(v) => setDateRangeKey(v)}>
-              <SelectTrigger className="w-[140px]">
+            <Select value={dateRangeKey} onValueChange={setDateRangeKey}>
+              <SelectTrigger className="w-[140px] min-w-[120px]">
                 <SelectValue placeholder="Select range" />
               </SelectTrigger>
               <SelectContent>
@@ -163,8 +139,8 @@ export function AccountChart({ transactions = [] }) {
 
           <div className="flex items-center gap-2 text-sm">
             <div className="text-muted-foreground text-xs">Granularity</div>
-            <Select value={granularity} onValueChange={(v) => setGranularity(v)}>
-              <SelectTrigger className="w-[120px]">
+            <Select value={granularity} onValueChange={setGranularity}>
+              <SelectTrigger className="w-[120px] min-w-[110px]">
                 <SelectValue placeholder="Granularity" />
               </SelectTrigger>
               <SelectContent>
@@ -185,20 +161,17 @@ export function AccountChart({ transactions = [] }) {
       </CardHeader>
 
       <CardContent>
-        {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
           <div className="p-3 rounded-lg border bg-muted/40 text-center">
             <div className="text-xs text-muted-foreground">Total Income</div>
             <div className="text-lg font-semibold text-emerald-600">{currencyFormatter(totals.income)}</div>
             <div className="text-xs text-muted-foreground">Avg ({granularity.toLowerCase()}) {currencyFormatter(processed.avg.income)}</div>
           </div>
-
           <div className="p-3 rounded-lg border bg-muted/40 text-center">
             <div className="text-xs text-muted-foreground">Total Expense</div>
             <div className="text-lg font-semibold text-red-600">{currencyFormatter(totals.expense)}</div>
             <div className="text-xs text-muted-foreground">Avg ({granularity.toLowerCase()}) {currencyFormatter(processed.avg.expense)}</div>
           </div>
-
           <div className="p-3 rounded-lg border bg-muted/40 text-center">
             <div className="text-xs text-muted-foreground">Net</div>
             <div className={`text-lg font-semibold ${net >= 0 ? "text-emerald-600" : "text-red-600"}`}>{currencyFormatter(net)}</div>
@@ -206,13 +179,11 @@ export function AccountChart({ transactions = [] }) {
           </div>
         </div>
 
-        {/* Legend toggles */}
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex flex-wrap items-center gap-3 mb-3">
           <button
             type="button"
             onClick={() => setShowIncome((s) => !s)}
             className={`px-3 py-1 rounded-full text-sm border ${showIncome ? "bg-emerald-50 border-emerald-200" : "bg-transparent border-muted/30"}`}
-            aria-pressed={showIncome}
           >
             Income
           </button>
@@ -220,27 +191,21 @@ export function AccountChart({ transactions = [] }) {
             type="button"
             onClick={() => setShowExpense((s) => !s)}
             className={`px-3 py-1 rounded-full text-sm border ${showExpense ? "bg-red-50 border-red-200" : "bg-transparent border-muted/30"}`}
-            aria-pressed={showExpense}
           >
             Expense
           </button>
         </div>
 
-        {/* Empty state */}
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground">
             <div className="mb-4 opacity-80">No transactions for the selected range.</div>
             <div className="text-sm">Try changing the date range or granularity.</div>
           </div>
         ) : (
-          <div className="h-[360px]">
+          <div className="h-[300px] sm:h-[360px] overflow-x-auto">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                margin={{ top: 10, right: 16, left: 6, bottom: 6 }}
-              >
-                {/* nice subtle grid */}
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--muted-foreground)" opacity={0.06} />
+              <BarChart data={chartData} margin={{ top: 10, right: 16, left: 6, bottom: 6 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.06} />
                 <XAxis
                   dataKey="dateLabel"
                   tick={{ fontSize: 12 }}
@@ -264,8 +229,6 @@ export function AccountChart({ transactions = [] }) {
                     borderRadius: "var(--radius)",
                   }}
                 />
-
-                {/* gradient defs */}
                 <defs>
                   <linearGradient id="gIncome" x1="0" x2="0" y1="0" y2="1">
                     <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
@@ -276,28 +239,11 @@ export function AccountChart({ transactions = [] }) {
                     <stop offset="100%" stopColor="#ef4444" stopOpacity={0.25} />
                   </linearGradient>
                 </defs>
-
-                {/* Bars: show/hide via legend toggles, stacked via `stackId` */}
                 {showIncome && (
-                  <Bar
-                    dataKey="income"
-                    name="Income"
-                    fill="url(#gIncome)"
-                    radius={[6, 6, 0, 0]}
-                    stackId={stacked ? "stack" : undefined}
-                    isAnimationActive
-                  />
+                  <Bar dataKey="income" name="Income" fill="url(#gIncome)" radius={[6, 6, 0, 0]} stackId={stacked ? "stack" : undefined} />
                 )}
-
                 {showExpense && (
-                  <Bar
-                    dataKey="expense"
-                    name="Expense"
-                    fill="url(#gExpense)"
-                    radius={[6, 6, 0, 0]}
-                    stackId={stacked ? "stack" : undefined}
-                    isAnimationActive
-                  />
+                  <Bar dataKey="expense" name="Expense" fill="url(#gExpense)" radius={[6, 6, 0, 0]} stackId={stacked ? "stack" : undefined} />
                 )}
               </BarChart>
             </ResponsiveContainer>
