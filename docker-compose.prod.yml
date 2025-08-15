@@ -5,15 +5,12 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # These map to values in your .env file
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         NEXT_PUBLIC_CLERK_FRONTEND_API: ${NEXT_PUBLIC_CLERK_FRONTEND_API}
-    container_name: finova_web
+    container_name: finova_web_prod
     ports:
       - "3000:3000"
     env_file:
       - .env
-    command: npm run dev
-    volumes:
-      - .:/app
-      - /app/node_modules
+    command: sh -c "npx prisma migrate deploy && npm start"
+    restart: unless-stopped
