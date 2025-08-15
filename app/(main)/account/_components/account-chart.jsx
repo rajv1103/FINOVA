@@ -51,7 +51,7 @@ const GRANULARITY = {
 
 const currencyFormatter = (v) =>
   typeof v === "number"
-    ? `Rs ${new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2 }).format(v)}`
+    ? `₹ ${new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2 }).format(v)}`
     : String(v);
 
 

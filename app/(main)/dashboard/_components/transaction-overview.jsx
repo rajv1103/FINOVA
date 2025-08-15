@@ -132,7 +132,7 @@ export function DashboardOverview({ accounts, transactions }) {
                   ) : (
                     <ArrowUpRight className="mr-1 h-4 w-4 animate-pulse group-hover:animate-none" />
                   )}
-                  ${tx.amount.toFixed(2)}
+                  ₹{tx.amount.toFixed(2)}
                 </div>
               </div>
             ))
@@ -191,7 +191,7 @@ export function DashboardOverview({ accounts, transactions }) {
               {/* center total */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  ${totalExpense.toFixed(2)}
+                  ₹{totalExpense.toFixed(2)}
                 </div>
               </div>
             </div>
