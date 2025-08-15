@@ -1,25 +1,10 @@
-# Node modules (should be installed inside the container)
 node_modules
-
-# Build output
 .next
 out
-
-# Environment variables
-.env*
-!.env.example
-
-# System and editor artifacts
-*.log
-*.DS_Store
-.vscode/
-.idea/
-*.swp
-
-# Git
+npm-debug.log
+.DS_Store
+.vscode
 .git
 .gitignore
-
-# Docker artifacts
-Dockerfile
-.dockerignore
+.env
+.env.local
