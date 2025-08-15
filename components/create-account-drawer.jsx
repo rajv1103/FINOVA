@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import Skeleton from "@/components/ui/skeleton";
+import { SkeletonDemo } from "@/components/ui/skeleton-demo";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -106,14 +106,11 @@ export function CreateAccountDrawer({ children }) {
         >
           {/* Account Name */}
           <div className="space-y-2">
-            <label
-              htmlFor="name"
-              className="text-sm font-medium text-label"
-            >
+            <label htmlFor="name" className="text-sm font-medium text-label">
               Account Name
             </label>
             {isLoading ? (
-              <Skeleton className="h-10 w-full rounded-md" />
+              <SkeletonDemo className="h-10 w-full rounded-md" />
             ) : (
               <Input
                 id="name"
@@ -135,14 +132,11 @@ export function CreateAccountDrawer({ children }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Account Type */}
             <div className="space-y-2">
-              <label
-                htmlFor="type"
-                className="text-sm font-medium text-label"
-              >
+              <label htmlFor="type" className="text-sm font-medium text-label">
                 Account Type
               </label>
               {isLoading ? (
-                <Skeleton className="h-10 w-full rounded-md" />
+                <SkeletonDemo className="h-10 w-full rounded-md" />
               ) : (
                 <Select
                   onValueChange={(val) => setValue("type", val)}
@@ -161,9 +155,7 @@ export function CreateAccountDrawer({ children }) {
                 </Select>
               )}
               {errors.type && (
-                <p className="text-sm text-red-500">
-                  {errors.type.message}
-                </p>
+                <p className="text-sm text-red-500">{errors.type.message}</p>
               )}
             </div>
 
@@ -176,7 +168,7 @@ export function CreateAccountDrawer({ children }) {
                 Initial Balance
               </label>
               {isLoading ? (
-                <Skeleton className="h-10 w-full rounded-md" />
+                <SkeletonDemo className="h-10 w-full rounded-md" />
               ) : (
                 <Input
                   id="balance"
@@ -213,14 +205,12 @@ export function CreateAccountDrawer({ children }) {
               </p>
             </div>
             {isLoading ? (
-              <Skeleton className="h-6 w-12 rounded-full" />
+              <SkeletonDemo className="h-6 w-12 rounded-full" />
             ) : (
               <Switch
                 id="isDefault"
                 checked={watch("isDefault")}
-                onCheckedChange={(checked) =>
-                  setValue("isDefault", checked)
-                }
+                onCheckedChange={(checked) => setValue("isDefault", checked)}
               />
             )}
           </div>
