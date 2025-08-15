@@ -1,25 +1,33 @@
-import DashboardPage from "./page";
-import { RingLoader } from "react-spinners";
+// <-- NO "use client" here: this is a Server Component by default
+
+import { BarLoader, RingLoader } from "react-spinners";
 import { Suspense } from "react";
 
-export default function Layout() {
+export default function DashboardLayout({ children }) {
   return (
-    <div className="px-5 min-h-screen flex flex-col">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight gradient-title">
-          Dashboard
-        </h1>
-      </div>
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-20 bg-white dark:bg-gray-800 shadow-sm">
+        <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+          <h1 className="gradient-title text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
+            Dashboard
+          </h1>
+        </div>
+      </header>
 
-      <Suspense
-        fallback={
-          <div className="flex-grow flex items-center justify-center">
-            <RingLoader color="#00d0ff" size={80} />
-          </div>
-        }
-      >
-        <DashboardPage />
-      </Suspense>
+      {/* Main */}
+      <main className="flex-grow max-w-7xl mx-auto px-5 py-8">
+        {/* If any child is async client, you can still wrap in Suspense */}
+        <Suspense
+          fallback={
+            <div className="flex-grow flex items-center justify-center">
+              <BarLoader color="#00ff2aff" size={80} />
+            </div>
+          }
+        >
+          {children}
+        </Suspense>
+      </main>
     </div>
   );
 }

@@ -42,12 +42,21 @@ export function AccountCard({ account }) {
   }, [error]);
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 group rounded-xl border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-800">
+    <Card className="hover:shadow-2xl transition-all duration-500 group rounded-xl border border-gray-200 bg-gradient-to-tr from-indigo-50 via-white to-purple-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 dark:border-gray-700">
       <Link href={`/account/${id}`}>
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
           <div className="flex items-center gap-2">
-            <CardTitle className="text-sm font-semibold capitalize">{name}</CardTitle>
-            {isDefault && <Badge variant="outline">Default</Badge>}
+            <CardTitle className="text-sm font-semibold capitalize text-gray-900 dark:text-gray-100">
+              {name}
+            </CardTitle>
+            {isDefault && (
+              <Badge
+                variant="outline"
+                className="animate-pulse bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-100"
+              >
+                Default
+              </Badge>
+            )}
           </div>
           <Switch
             checked={isDefault}
@@ -56,20 +65,20 @@ export function AccountCard({ account }) {
           />
         </CardHeader>
         <CardContent className="space-y-1">
-          <div className="text-xl sm:text-2xl font-bold tracking-tight">
+          <div className="text-xl sm:text-2xl font-bold tracking-tight text-indigo-700 dark:text-indigo-300 transition-colors duration-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-200">
             ${parseFloat(balance).toFixed(2)}
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
             {type.charAt(0) + type.slice(1).toLowerCase()} Account
           </p>
         </CardContent>
-        <CardFooter className="flex justify-between text-sm text-muted-foreground pt-2">
+        <CardFooter className="flex justify-between text-sm text-gray-600 dark:text-gray-400 pt-2">
           <div className="flex items-center gap-1">
-            <ArrowUpRight className="h-4 w-4 text-green-500" />
+            <ArrowUpRight className="h-4 w-4 text-green-500 animate-pulse" />
             Income
           </div>
           <div className="flex items-center gap-1">
-            <ArrowDownRight className="h-4 w-4 text-red-500" />
+            <ArrowDownRight className="h-4 w-4 text-red-500 animate-pulse" />
             Expense
           </div>
         </CardFooter>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -33,160 +33,167 @@ const COLORS = [
 ];
 
 export function DashboardOverview({ accounts, transactions }) {
+  // mount for fade-in
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [selectedAccountId, setSelectedAccountId] = useState(
     accounts.find((a) => a.isDefault)?.id || accounts[0]?.id
   );
 
-  // Filter transactions for selected account
+  // filter & sort
   const accountTransactions = transactions.filter(
     (t) => t.accountId === selectedAccountId
   );
-
-  // Get recent transactions (last 5)
   const recentTransactions = accountTransactions
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
 
-  // Calculate expense breakdown for current month
-  const currentDate = new Date();
+  // this month’s expenses
+  const now = new Date();
   const currentMonthExpenses = accountTransactions.filter((t) => {
-    const transactionDate = new Date(t.date);
+    const d = new Date(t.date);
     return (
       t.type === "EXPENSE" &&
-      transactionDate.getMonth() === currentDate.getMonth() &&
-      transactionDate.getFullYear() === currentDate.getFullYear()
+      d.getMonth() === now.getMonth() &&
+      d.getFullYear() === now.getFullYear()
     );
   });
 
-  // Group expenses by category
-  const expensesByCategory = currentMonthExpenses.reduce((acc, transaction) => {
-    const category = transaction.category;
-    if (!acc[category]) {
-      acc[category] = 0;
-    }
-    acc[category] += transaction.amount;
+  // group for pie
+  const expensesByCategory = currentMonthExpenses.reduce((acc, tx) => {
+    acc[tx.category] = (acc[tx.category] || 0) + tx.amount;
     return acc;
   }, {});
-
-  // Format data for pie chart
   const pieChartData = Object.entries(expensesByCategory).map(
-    ([category, amount]) => ({
-      name: category,
-      value: amount,
-    })
+    ([name, value]) => ({ name, value })
   );
 
+  // fade-in + hover styles
+  const cardBase =
+    "transform transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-xl";
+  const fadeInClass = mounted
+    ? "opacity-100 translate-y-0"
+    : "opacity-0 translate-y-4";
+
+  // total expense this month
+  const totalExpense = currentMonthExpenses.reduce((sum, tx) => sum + tx.amount, 0);
+
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {/* Recent Transactions Card */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle className="text-base font-normal">
-            Recent Transactions
-          </CardTitle>
+    <div className="grid gap-6 md:grid-cols-2 p-4">
+      {/* Recent Transactions */}
+      <Card className={cn(cardBase, fadeInClass)}>
+        <CardHeader className="flex items-center justify-between pb-4 px-6">
+          <CardTitle className="text-base font-medium">Recent Transactions</CardTitle>
           <Select
             value={selectedAccountId}
             onValueChange={setSelectedAccountId}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-44 transition ring-1 ring-amber-400 focus:ring-2 focus:ring-amber-500">
               <SelectValue placeholder="Select account" />
             </SelectTrigger>
             <SelectContent>
-              {accounts.map((account) => (
-                <SelectItem key={account.id} value={account.id}>
-                  {account.name}
+              {accounts.map((a) => (
+                <SelectItem key={a.id} value={a.id}>
+                  {a.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentTransactions.length === 0 ? (
-              <p className="text-center text-muted-foreground py-4">
-                No recent transactions
-              </p>
-            ) : (
-              recentTransactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center justify-between"
-                >
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {transaction.description || "Untitled Transaction"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(new Date(transaction.date), "PP")}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={cn(
-                        "flex items-center",
-                        transaction.type === "EXPENSE"
-                          ? "text-red-500"
-                          : "text-green-500"
-                      )}
-                    >
-                      {transaction.type === "EXPENSE" ? (
-                        <ArrowDownRight className="mr-1 h-4 w-4" />
-                      ) : (
-                        <ArrowUpRight className="mr-1 h-4 w-4" />
-                      )}
-                      ${transaction.amount.toFixed(2)}
-                    </div>
-                  </div>
+
+        <CardContent className="px-6 space-y-4">
+          {recentTransactions.length === 0 ? (
+            <p className="text-center text-muted-foreground py-6">
+              No recent transactions
+            </p>
+          ) : (
+            recentTransactions.map((tx) => (
+              <div
+                key={tx.id}
+                className="flex items-center justify-between p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">{tx.description || "Untitled"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {format(new Date(tx.date), "PP")}
+                  </p>
                 </div>
-              ))
-            )}
-          </div>
+                <div
+                  className={cn(
+                    "flex items-center font-medium",
+                    tx.type === "EXPENSE" ? "text-red-500" : "text-green-500"
+                  )}
+                >
+                  {tx.type === "EXPENSE" ? (
+                    <ArrowDownRight className="mr-1 h-4 w-4 animate-pulse group-hover:animate-none" />
+                  ) : (
+                    <ArrowUpRight className="mr-1 h-4 w-4 animate-pulse group-hover:animate-none" />
+                  )}
+                  ${tx.amount.toFixed(2)}
+                </div>
+              </div>
+            ))
+          )}
         </CardContent>
       </Card>
 
-      {/* Expense Breakdown Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-normal">
+      {/* Monthly Expense Breakdown */}
+      <Card className={cn(cardBase, fadeInClass)}>
+        <CardHeader className="px-6 pb-0">
+          <CardTitle className="text-base font-medium">
             Monthly Expense Breakdown
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0 pb-5">
+
+        <CardContent className="p-0">
           {pieChartData.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">
+            <p className="text-center text-muted-foreground py-6">
               No expenses this month
             </p>
           ) : (
-            <div className="h-[300px]">
+            <div className="relative h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={pieChartData}
                     cx="50%"
                     cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
+                    innerRadius={60}
+                    outerRadius={100}
                     dataKey="value"
-                    label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
+                    paddingAngle={4}
                   >
-                    {pieChartData.map((entry, index) => (
+                    {pieChartData.map((entry, i) => (
                       <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
+                        key={`cell-${i}`}
+                        fill={COLORS[i % COLORS.length]}
                       />
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value) => `$${value.toFixed(2)}`}
+                    formatter={(v) => `₹${v.toFixed(2)}`}
                     contentStyle={{
                       backgroundColor: "hsl(var(--popover))",
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "var(--radius)",
                     }}
                   />
-                  <Legend />
+                  <Legend
+                    verticalAlign="bottom"
+                    wrapperStyle={{ paddingTop: 8, fontSize: 12 }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
+
+              {/* center total */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  ${totalExpense.toFixed(2)}
+                </div>
+              </div>
             </div>
           )}
         </CardContent>

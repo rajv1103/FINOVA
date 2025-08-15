@@ -1,11 +1,18 @@
 "use client"
 
-import { Skeleton } from "@components/ui/skeleton"
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-export function SkeletonDemo() {
+export const Skeleton = React.forwardRef(({ className, ...props }, ref) => {
   return (
-    <div className="space-y-2">
-      <Skeleton className="h-4 w-3/4" />
-    </div>
+    <div
+      ref={ref}
+      className={cn(
+        "animate-pulse rounded-md bg-gray-200 dark:bg-gray-700",
+        className
+      )}
+      {...props}
+    />
   )
-}
+})
+Skeleton.displayName = "Skeleton"
