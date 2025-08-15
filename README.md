@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 💸 **FINOVA** — _Spend Smart. Live Smarter._
 
-## Getting Started
+**Version:** `0.1.0`
+A modern, AI-powered finance platform built with **Next.js** and **JavaScript**.
+📊 Track, analyze, and improve your spending habits with real-time AI-driven insights.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+- 🧾 **Smart Receipt Scanner**: Automatically extract data from receipts using advanced AI.
+- 📈 **InsightIQ Dashboard**: Visualize spending trends and uncover hidden patterns with analytics.
+- 🏦 **Unified Account Hub**: Connect all your banks and cards into one seamless experience.
+- 🌍 **Currency Compass**: Manage multiple currencies with real-time conversion updates.
+- 🤖 **AutoAdvisor**: Get personalized financial tips and automated recommendations.
+- 💰 **Budget Blueprint**: Create, track, and optimize smart budgets with AI help.
+
+---
+
+## ⚙️ How It Works
+
+1. 🚀 **Sign Up Instantly**: Register using email or mobile—secure and fast.
+2. 🔗 **Link & Auto-Sync**: Connect bank accounts, UPI apps, and wallets to sync transactions.
+3. 🧠 **Smart Insights & Goals**: Set savings goals and let AI guide your financial growth.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: ⚛️ Next.js, React 19, Tailwind CSS
+- **Authentication**: 🔐 Clerk
+- **Forms & Validation**: 📝 react-hook-form, zod
+- **UI Components**: 🎛 Radix UI, lucide-react, framer-motion,Shadcn ui
+- **Charts & Visuals**: 📊 Recharts
+- **Database & ORM**: 🗄 Prisma
+- **Backend**: 🧩 Node.js, Express via `@arcjet/next`, Inngest for workflows
+- **AI Services**: 🧠 Google Generative AI
+- **Emails**: 📧 Resend
+- **Other Tools**: 🕒 date-fns, 🔔 sonner, 🔐 vaul
+
+---
+
+## 🧪 Available Scripts
+
+- `pnpm dev` — ⚙️ Start the development server with Turbopack
+- `pnpm build` — 🏗 Build for production
+- `pnpm start` — 🚀 Run the production server
+- `pnpm lint` — 🧹 Check code quality
+- `pnpm email` — ✉️ Launch email development preview
+
+---
+
+## 🔐 Environment Variables
+
+Rename `.env.example` to `.env` and provide the following:
+
+```dotenv
+# Clerk
+CLERK_API_KEY=
+CLERK_SECRET_KEY=
+
+# Database
+DATABASE_URL=
+
+# Email (Resend)
+RESEND_API_KEY=
+
+# Inngest
+INNGEST_API_KEY=
+
+# Google Generative AI
+GOOGLE_API_KEY=
+
+# Any other third-party credentials
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🚀 Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Start the dev server:
 
-## Learn More
+   ```bash
+   pnpm dev
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Open [http://localhost:3000](http://localhost:3000) 🌐
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Sign up and link your accounts 🏦
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Explore insights, set budgets, and get smart recommendations 💡
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome!
+Open an issue or submit a PR to collaborate 💬
+
+---
+
+**Happy budgeting!** 🧮💚
+Let FINOVA help you master your money.
+
+---
